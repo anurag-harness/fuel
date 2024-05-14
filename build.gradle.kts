@@ -16,26 +16,9 @@ allprojects {
     version = if (isReleaseBuild) artifactPublishVersion else "main-SNAPSHOT"
 }
 
-
-tasks.withType<Test> {
-    println("Configuring Test tasks...")
-
-    val harnessJavaAgent = System.getProperty("HARNESS_JAVA_AGENT")
-    if (harnessJavaAgent != null) {
-        println("Setting JVM args for Test tasks: $harnessJavaAgent")
+tasks {
+    test {
+        val harnessJavaAgent = System.getProperty("HARNESS_JAVA_AGENT")
         jvmArgs(harnessJavaAgent)
-    } else {
-        println("No HARNESS_JAVA_AGENT provided")
-    }
-}
-
-gradle.projectsEvaluated {
-    println("All projects have been evaluated. Configuring Test tasks post-evaluation...")
-
-    tasks.withType<Test> {
-        println("Setting Test task filters...")
-        filter {
-            isFailOnNoMatchingTests = false
-        }
     }
 }
