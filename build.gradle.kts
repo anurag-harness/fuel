@@ -17,18 +17,27 @@ allprojects {
 }
 
 
-tasks.withType(Test) {
-  if(System.getProperty("HARNESS_JAVA_AGENT")) {
-    jvmArgs += [System.getProperty("HARNESS_JAVA_AGENT")]
-  }
+// This block will configure the Test tasks to use a specific JVM argument if it is provided via a system property.
+tasks.withType<Test> {
+    println "Configuring Test tasks..."
+
+    val harnessJavaAgent = System.getProperty("HARNESS_JAVA_AGENT")
+    if (harnessJavaAgent != null) {
+        println "Setting JVM args for Test tasks: $harnessJavaAgent"
+        jvmArgs(harnessJavaAgent)
+    } else {
+        println "No HARNESS_JAVA_AGENT provided"
+    }
 }
 
-// This makes sure that any test tasks for subprojects don't
-// fail in case the test filter does not match.
+// This block is executed once all projects are evaluated, and it configures the behavior of Test tasks further.
 gradle.projectsEvaluated {
-        tasks.withType(Test) {
-            filter {
-                setFailOnNoMatchingTests(false)
-            }
+    println "All projects have been evaluated. Configuring Test tasks post-evaluation..."
+    
+    tasks.withType<Test> {
+        println "Setting Test task filters..."
+        filter {
+            isFailOnNoMatchingTests = false
         }
+    }
 }
