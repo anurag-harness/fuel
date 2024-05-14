@@ -17,17 +17,18 @@ allprojects {
 }
 
 
-tasks.withType<Test> {
-    val harnessJavaAgent = System.getProperty("HARNESS_JAVA_AGENT")
-    if (harnessJavaAgent != null) {
-        jvmArgs(harnessJavaAgent)
-    }
+tasks.withType(Test) {
+  if(System.getProperty("HARNESS_JAVA_AGENT")) {
+    jvmArgs += [System.getProperty("HARNESS_JAVA_AGENT")]
+  }
 }
 
+// This makes sure that any test tasks for subprojects don't
+// fail in case the test filter does not match.
 gradle.projectsEvaluated {
-    tasks.withType<Test> {
-        filter {
-            isFailOnNoMatchingTests = false
+        tasks.withType(Test) {
+            filter {
+                setFailOnNoMatchingTests(false)
+            }
         }
-    }
 }
