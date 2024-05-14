@@ -2,7 +2,7 @@ package fuel
 
 public interface FuelRouting : RequestConvertible {
     /**
-     * Base path handler for the remote call.
+     * Base path handler for the remote call. 
      */
     public val basePath: String
 
